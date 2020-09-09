@@ -60,7 +60,7 @@ int main(int argc,char *argv[]) //argv[1] = name of the output file, argv[2] = p
       {
         g(j) = btilde(j)+g(j-1)/dtilde(j-1);
       }
-      for(int j=n-2;j>=0;j-=1)
+      for(int j=n-2;j>0;j-=1)
       {
         sol(j)=(g(j)+sol(j+1))/dtilde(j);
       }
@@ -77,7 +77,7 @@ int main(int argc,char *argv[]) //argv[1] = name of the output file, argv[2] = p
       ofile.open(fileout);
       ofile << setiosflags(ios::showpoint | ios::uppercase);
       ofile << "       x:             approx:          exact:       relative error" << endl;
-      for (int i = 1; i < n;i+=1)
+      for (int i = 0; i < n;i+=1)
       {
 	       double RelativeError = fabs((exact(x(i))-sol(i))/exact(x(i)));
 	       ofile << setw(18) << setprecision(8) << x(i);
@@ -125,7 +125,7 @@ int main(int argc,char *argv[]) //argv[1] = name of the output file, argv[2] = p
         gs(j) = btilde(j)-as(j-1)*gs(j-1)/ds(j-1);
       }
 
-      for(int j = n-2;j>=0;j-=1)
+      for(int j = n-2;j>0;j-=1)
       {
         sols(j)=(gs(j)-cs(j)*sols(j+1))/ds(j);
       }
@@ -142,7 +142,7 @@ int main(int argc,char *argv[]) //argv[1] = name of the output file, argv[2] = p
       ofile.open(fileout);
       ofile << setiosflags(ios::showpoint | ios::uppercase);
       ofile << "       x:             approx:          exact:       relative error" << endl;
-      for (int i = 1; i < n;i+=1)
+      for (int i = 0; i < n;i+=1)
       {
          double RelativeError = fabs((exact(x(i))-sols(i))/exact(x(i)));
          ofile << setw(18) << setprecision(8) << x(i);
