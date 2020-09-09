@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 fastnames = ["runs/run1/timefast","runs/run2/timefast","runs/run3/timefast","runs/run4/timefast","runs/run5/timefast","runs/run6/timefast","runs/run7/timefast"]
 slownames = ["runs/run1/timeslow","runs/run2/timeslow","runs/run3/timeslow","runs/run4/timeslow","runs/run5/timeslow","runs/run6/timeslow","runs/run7/timeslow"]
 
+
+#getting data from file
 fast = []
 slow = []
 for names in fastnames:
@@ -34,6 +36,7 @@ fastavg = []
 slowstd = []
 faststd = []
 
+#calculating the averages for the times for the different algorithms as well as standard deviation
 for i in range(len(slow[0])):
     sums = 0
     sumf = 0
@@ -61,7 +64,7 @@ for i in range(len(arrslowavg)):
     print("The slow algorithm takes on average %.4f ms  +- %.4f ms when n = %g"%(arrslowavg[i]*1000,arrslowstd[i]*1000,10**(i+1)))
     print("The fast algorithm takes on average %.4f ms +- %.4f ms when n = %g"%(arrfastavg[i]*1000,arrfaststd[i]*1000,10**(i+1)))
 
-
+#averages over all the different values for n
 multavg = arrslowavg/arrfastavg
 multavgstd = multavg*np.sqrt((arrslowstd/arrslowavg)**2+(arrfaststd/arrfastavg)**2)
 for i in range(1,len(slow)+1):
@@ -69,6 +72,8 @@ for i in range(1,len(slow)+1):
 print(" ")
 print("The slow algorithm takes %.1f +- %.1f times longer on average"%(multavg.mean(),np.std(multavg)))
 
+
+#getting more data
 datanames1 = ["runs/run1/output1fast","runs/run2/output1fast","runs/run3/output1fast","runs/run4/output1fast","runs/run5/output1fast","runs/run6/output1fast","runs/run7/output1fast"]
 datanames2 = ["runs/run1/output2fast","runs/run2/output2fast","runs/run3/output2fast","runs/run4/output2fast","runs/run5/output2fast","runs/run6/output2fast","runs/run7/output2fast"]
 datanames3 = ["runs/run1/output3fast","runs/run2/output3fast","runs/run3/output3fast","runs/run4/output3fast","runs/run5/output3fast","runs/run6/output3fast","runs/run7/output3fast"]
@@ -168,6 +173,7 @@ for names in datanames7:
     f.close()
 """
 
+#plotting the plot for the approximations for different values of n
 plt.plot(x1,approx1, label = "n=10")
 plt.plot(x2,approx2, label = "n=100")
 plt.plot(x3,approx3, label = "n=1000")
@@ -181,6 +187,7 @@ plt.show()
 
 maxerrors = []
 
+#finding the greatest errors in the runs and taking averages for each value of n
 for j in range(len(error1)):
     maxerror = [0,0,0,0,0,0] #add 1 more 0 if using n = 10**7 files
     for i in range(2,len(error1[0])): #we skip the first element since that one always is NaN
