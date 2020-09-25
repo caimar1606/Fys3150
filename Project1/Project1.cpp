@@ -49,7 +49,7 @@ int main(int argc,char *argv[]) //argv[1] = name of the output file
         double h = pow(10,-i); //stepsize
         int n = 1/h;
 
-        vec x = linspace(0,1,n); //xvalues
+        vec x = linspace(0,1,n); //xvalues, need n+1, not n
         vec btilde = h*h*f(x);   //function times stepsize squared
         vec sol = vec(n,fill::zeros); //array for the solution values
         vec g = vec(n,fill::zeros);   //array for the new right hand size variables
