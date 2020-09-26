@@ -3,24 +3,26 @@
 #include <cstdlib>
 #include <iostream>
 #include <tuple>
+#include <iomanip>
 
 using namespace arma;
 using namespace std;
 
 ofstream ofile;
 
-void Jacobi::Initialize(int N, double eps, int S, string filename){
+void Jacobi::Initialize(int N, double eps, int S,double rhomax, string filename){
   m_eps = eps;
   m_N = N;
   m_S = S;
-  double h = 1.0/N;
+  double h = rhomax/double(N);
+  vec rho = linspace(0,rhomax,N+1);
   m_filename = filename;
   m_R = mat(N-1,N-1,fill::eye);
   m_A = mat(N-1,N-1,fill::zeros);
   for(int i=0;i<N-1;i++){
     for(int j=0;j<N-1;j++){
       if(i==j)
-        m_A(i,j) = 2/(h*h);
+        m_A(i,j) = 2/(h*h)+rho(i+1)*rho(i+1);
       else if(i == j-1 || i == j+1)
         m_A(i,j) = -1/(h*h);
     }

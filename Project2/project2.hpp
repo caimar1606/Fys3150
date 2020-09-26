@@ -1,7 +1,5 @@
 #ifndef project2_HPP
 #define project2_HPP
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
 
 #include <armadillo>
 #include <cstdlib>
@@ -23,7 +21,7 @@ private:
   void ComputeB(int k, int l);
 
 public:
-  void Initialize(int N, double eps, int S, string filename);
+  void Initialize(int N, double eps, int S,double rhomax, string filename);
   void Solve();
   void Print();
 
