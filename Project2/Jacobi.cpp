@@ -10,21 +10,49 @@ using namespace std;
 
 ofstream ofile;
 
-void Jacobi::Initialize(int N, double eps, int S,double rhomax, string filename){
+void Jacobi::Initialize(int N, double eps, int S,double rhomax,int mode,double angfreq, string filename){
+  double h;
   m_eps = eps;
   m_N = N;
   m_S = S;
-  double h = rhomax/double(N);
+  if(mode ==0){
+    h = 1/double(N);
+  }
+  else{
+    h = rhomax/double(N);
+  }
   vec rho = linspace(0,rhomax,N+1);
   m_filename = filename;
   m_R = mat(N-1,N-1,fill::eye);
   m_A = mat(N-1,N-1,fill::zeros);
-  for(int i=0;i<N-1;i++){
-    for(int j=0;j<N-1;j++){
-      if(i==j)
-        m_A(i,j) = 2/(h*h)+rho(i+1)*rho(i+1);
-      else if(i == j-1 || i == j+1)
-        m_A(i,j) = -1/(h*h);
+  if(mode == 0){
+    for(int i=0;i<N-1;i++){
+      for(int j=0;j<N-1;j++){
+        if(i==j)
+          m_A(i,j) = 2/(h*h);
+        else if(i == j-1 || i == j+1)
+          m_A(i,j) = -1/(h*h);
+      }
+    }
+  }
+  else if(mode==1){
+    for(int i=0;i<N-1;i++){
+      for(int j=0;j<N-1;j++){
+        if(i==j)
+          m_A(i,j) = 2/(h*h)+rho(i+1)*rho(i+1);
+        else if(i == j-1 || i == j+1)
+          m_A(i,j) = -1/(h*h);
+      }
+    }
+  }
+  else if(mode==2){
+    for(int i=0;i<N-1;i++){
+      for(int j=0;j<N-1;j++){
+        if(i==j)
+          m_A(i,j) = 2/(h*h)+angfreq*angfreq*rho(i+1)*rho(i+1)+1/rho(i+1);
+        else if(i == j-1 || i == j+1)
+          m_A(i,j) = -1/(h*h);
+      }
     }
   }
 }

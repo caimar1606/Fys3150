@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-N = 10
+N = 100
 
 def lamb(N):
     rho_N  = 1.0
@@ -17,33 +17,35 @@ def lamb(N):
     return eigenvals,eigenvec
 
 val,vec = lamb(N)
-print(val)
-print(vec[0,:])
 
 rho = np.linspace(0,1,N+1)
 numvec = np.zeros(N-1)
 
-f = open("eigenvalues.txt")
+f = open("2b.txt")
 f.readline()
 f.readline()
 for i in range(0,len(numvec)):
     numvec[i]=float(f.readline())
 
 plt.plot(rho[1:-1],numvec,label = "Jacobi")
-plt.plot(rho[1:-1],vec[0,:],label = "analytical")
+plt.plot(rho[1:-1],vec[0,:],label = "Analytical")
 plt.xlim(0,1)
 plt.ylim(0,np.max(vec[0,:])+0.1)
+plt.title("Jacobi vs Analytical")
+plt.xlabel(r"$\rho$")
+plt.ylabel("y")
 plt.legend()
 plt.show()
 
-scale = numvec[0]/vec[0,0]
-scalevec = vec[0,:]*scale
+numvec = numvec/np.linalg.norm(numvec)
+scalevec = vec[0,:]/np.linalg.norm(vec[0,:])
 
 plt.plot(rho[1:-1],numvec,label = "Jacobi")
 plt.plot(rho[1:-1],scalevec,label = "Analytical", linestyle = "dashed",color = "k", linewidth = 2)
+plt.title("Jacobi vs Analytical, scaled")
+plt.xlabel(r"$\rho$")
+plt.ylabel("y")
 plt.xlim(0,1)
-plt.ylim(0,np.max(scalevec)+0.1)
+plt.ylim(0,np.max(scalevec)+0.01)
 plt.legend()
 plt.show()
-
-print(np.linalg.norm(numvec))
