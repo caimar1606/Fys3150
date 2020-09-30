@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-N = 100
+N = 101
 
 def lamb(N):
     rho_N  = 1.0
@@ -19,21 +19,42 @@ def lamb(N):
 val,vec = lamb(N)
 
 rho = np.linspace(0,1,N+1)
+numeig = np.zeros(N-1)
 numvec = np.zeros(N-1)
 
-f = open("2b.txt")
-f.readline()
+
+f = open("buckbeam.txt")
 f.readline()
 for i in range(0,len(numvec)):
-    numvec[i]=float(f.readline())
+    numeig[i]=float(f.readline())
+f.close()
+
+print(numeig[:6])
+print(val[:6])
+
+plt.plot(rho[1:-1],numeig,"b-",label = "Jacobi",linewidth =3)
+plt.plot(rho[1:-1],val,"y--",label = "Analytical", linewidth = 2)
+plt.xlim(0,1)
+plt.ylim(0,np.max(numeig)+100)
+plt.title("Egenverdier for Jacobimetoden og analytiske for Buckling Beam")
+plt.xlabel(r"$\rho$")
+plt.ylabel(r"$\lambda$")
+plt.legend(loc = "lower right")
+plt.show()
+
+f = open("vecbuckbeam.txt")
+f.readline()
+for i in range(N-1):
+    numvec[i] = float(f.readline())
+
 
 plt.plot(rho[1:-1],numvec,label = "Jacobi")
 plt.plot(rho[1:-1],vec[0,:],label = "Analytical")
 plt.xlim(0,1)
 plt.ylim(0,np.max(vec[0,:])+0.1)
-plt.title("Jacobi vs Analytical")
+plt.title("Egenvektor nr 1 for Jacobimetoden og analytisk Buckling Beam")
 plt.xlabel(r"$\rho$")
-plt.ylabel("y")
+plt.ylabel(r"u($\rho$)")
 plt.legend()
 plt.show()
 
@@ -42,9 +63,9 @@ scalevec = vec[0,:]/np.linalg.norm(vec[0,:])
 
 plt.plot(rho[1:-1],numvec,label = "Jacobi")
 plt.plot(rho[1:-1],scalevec,label = "Analytical", linestyle = "dashed",color = "k", linewidth = 2)
-plt.title("Jacobi vs Analytical, scaled")
+plt.title("Egenvektor nr 1 for Jacobimetoden og normalisert, analytisk Buckling Beam")
 plt.xlabel(r"$\rho$")
-plt.ylabel("y")
+plt.ylabel(r"u($\rho$)")
 plt.xlim(0,1)
 plt.ylim(0,np.max(scalevec)+0.01)
 plt.legend()
