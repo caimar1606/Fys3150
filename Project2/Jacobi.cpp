@@ -148,10 +148,17 @@ void Jacobi::Print(){
   printvec = sort(printvec);
   ofile.open(m_filename);
   ofile << setiosflags(ios::scientific | ios::uppercase);
+  ofile << setprecision(8) << "Eigenvalues:"<<endl;
   for (int i = 0; i < m_N-1; i++){
-    ofile << setw(10) << setprecision(8) << "Eigenvalue" <<printvec(i)<<endl;
-    ofile << setw(10) << setprecision(8) << "Eigenvector"<<endl;
-    ofile << setw(10) << setprecision(8) << m_R.col(indexes(i))<<endl;
+    ofile << setw(10) << setprecision(8)<<printvec(i)<<endl;
   }
   ofile.close();
+
+  m_filename.insert(0,"vec");
+  ofile.open(m_filename);
+  ofile << setiosflags(ios::scientific | ios::uppercase);
+  for(int i = 0;i <m_N-1;i++){
+    ofile << setprecision(8) << "Eigenvector"<< i << ":" <<endl;
+    ofile << setw(10) << setprecision(8)<<m_R.col(indexes(i))<<endl;
+  }
 }
