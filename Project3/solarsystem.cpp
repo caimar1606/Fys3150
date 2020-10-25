@@ -10,22 +10,14 @@ using namespace std;
 
 ofstream ofile;
 
-void solarsystem::initialize(int total){
-  m_M = vec(total,fill::zeros);
-  m_rstart = vec(2*total, fill::zeros);
-  m_vstart = vec(2*total, fill::zeros);
-  m_GdM = vec(total,fill::zeros);
-  m_planets = 0;
-  m_beta = 2;
-}
-
-void solarsystem::initialize(int total, double beta){
+void solarsystem::initialize(int total, double beta, double rel){
   m_M = vec(total,fill::zeros);
   m_rstart = vec(2*total, fill::zeros);
   m_vstart = vec(2*total, fill::zeros);
   m_GdM = vec(total,fill::zeros);
   m_planets = 0;
   m_beta = beta;
+  m_rel = rel;
 }
 
 void solarsystem::add_planet(double mass, vec rstart, vec vstart){
@@ -68,23 +60,37 @@ void solarsystem::solve_verlet(double Tmax, double h){
 
 mat solarsystem::accel(int planet, int step){
   mat a = mat(1,2,fill::zeros);
-  double len;
-  for(int i=0; i< m_planets;i++){
-    if(i==planet) continue;
-    len = norm(m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)),2);
-    a += -m_GdM(i)/(pow(len,m_beta+1))*(m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)));
+  double len, clen;
+  mat vectr, vectv;
+  if (m_rel ==0){
+    for(int i=0; i< m_planets;i++){
+      if(i==planet) continue;
+      len = norm(m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)),2);
+      a += -m_GdM(i)/(pow(len,m_beta+1))*(m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)));
+    }
+    return a;
   }
-  return a;
+  else{
+    for(int i=0; i< m_planets;i++){
+      if(i==planet) continue;
+      vectr = (m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)));
+      vectv = (m_v(step,span(planet*2,planet*2+1))-m_v(step,span(i*2,i*2+1)));
+      len = norm(m_r(step,span(planet*2,planet*2+1))-m_r(step,span(i*2,i*2+1)),2);
+      clen = vectr(0,0)*vectv(0,1)-vectr(0,1)*vectv(0,0);
+      a -= m_GdM(i)/(pow(len,m_beta+1))*vectr*(1+3*clen*clen/(len*len*63240*63240));
+    }
+    return a;
+  }
 }
 
-void solarsystem::print(string outputr, string outputv){
+void solarsystem::print(string outputr, string outputv, int skip){
   for(int k=0; k < m_planets; k++){
     string filename = outputr + to_string(k)+".txt";
     ofile.open(filename);
     ofile << setiosflags(ios::scientific | ios::uppercase);
     ofile << setw(18) << setprecision(8) << "x";
     ofile << setw(18) << setprecision(8) << "y"<<"\n";
-    for (int i = 0; i < m_r.n_rows; i++){
+    for (int i = 0; i < m_r.n_rows; i+=skip){
       ofile << setw(18) << setprecision(8) << m_r(i,2*k);
       ofile << setw(18) << setprecision(8) << m_r(i,2*k+1)<<"\n";
     }
@@ -96,39 +102,9 @@ void solarsystem::print(string outputr, string outputv){
     ofile << setiosflags(ios::scientific | ios::uppercase);
     ofile << setw(18) << setprecision(8) << "x";
     ofile << setw(18) << setprecision(8) << "y"<<"\n";
-    for (int i = 0; i < m_r.n_rows; i++){
+    for (int i = 0; i < m_r.n_rows; i+=skip){
       ofile << setw(8) << setprecision(8) << m_v(i,2*k);
       ofile << setw(18) << setprecision(8) << m_v(i,2*k+1)<<"\n";
-    }
-    ofile.close();
-  }
-}
-
-void solarsystem::printv(string output){
-  for(int k=0; k < m_planets; k++){
-    string filename = output + to_string(k)+".txt";
-    ofile.open(filename);
-    ofile << setiosflags(ios::scientific | ios::uppercase);
-    ofile << setw(18) << setprecision(8) << "x";
-    ofile << setw(18) << setprecision(8) << "y"<<"\n";
-    for (int i = 0; i < m_r.n_rows; i++){
-      ofile << setw(18) << setprecision(8) << m_v(i,2*k);
-      ofile << setw(18) << setprecision(8) << m_v(i,2*k+1)<<"\n";
-    }
-    ofile.close();
-  }
-}
-
-void solarsystem::printr(string output){
-  for(int k=0; k < m_planets; k++){
-    string filename = output + to_string(k)+".txt";
-    ofile.open(filename);
-    ofile << setiosflags(ios::scientific | ios::uppercase);
-    ofile << setw(18) << setprecision(8) << "x";
-    ofile << setw(18) << setprecision(8) << "y"<<"\n";
-    for (int i = 0; i < m_r.n_rows; i++){
-      ofile << setw(18) << setprecision(8) << m_r(i,2*k);
-      ofile << setw(18) << setprecision(8) << m_r(i,2*k+1)<<"\n";
     }
     ofile.close();
   }
