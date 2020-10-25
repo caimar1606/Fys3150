@@ -45,8 +45,8 @@ plt.plot(np.log(N),np.log(timeefinal), label ="Euler")
 plt.plot(np.log(N),np.log(timevfinal), label ="Velocity verlet")
 
 plt.title("Tidssammenlikning")
-plt.ylabel("ln(Tid[ms]/1ms)")
-plt.xlabel("steglengde [yr]")
+plt.ylabel("log(Tid[ms]/1ms)")
+plt.xlabel("log(steglengde[yr]/1yr)")
 
 plt.show()
 
