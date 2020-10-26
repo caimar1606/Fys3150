@@ -46,8 +46,8 @@ plt.plot(np.log(N),np.log(timevfinal), label ="Velocity verlet")
 
 plt.title("Tidssammenlikning")
 plt.ylabel("log(Tid[ms]/1ms)")
-plt.xlabel("log(steglengde[yr]/1yr)")
-
+plt.xlabel(" log(N)")
+plt.legend()
 plt.show()
 
 
@@ -55,10 +55,7 @@ valuese = stats.linregress(np.log(N),np.log(timeefinal))
 valuesv = stats.linregress(np.log(N),np.log(timevfinal))
 
 print("The time for euler goes like N^%.2f" %valuese[0])
-print("The time for velocity verlet goes like N^%.2f" %valuesv[0])
-
-plt.plot(np.log(N),timevfinal/timeefinal)
-plt.show()
+print("The time for velocity verlet goes like N^%.2f" %valuesv[0]
 
 error = np.zeros(4)
 

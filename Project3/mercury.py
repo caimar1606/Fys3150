@@ -11,7 +11,7 @@ T = 100
 
 first = "mercurysunsystem/verlet_position_"
 last = "_object_"
-dt = "0_000001"
+dt = "0_000001_nonrel"
 dtval = 0.000001
 
 for i in range(2):
@@ -59,11 +59,15 @@ tan = rely[peri]/relx[peri]
 
 angle = np.degrees(np.arctan(tan))
 
+plt.plot(t[peri],angle)
+
 vals = stats.linregress(t[peri],angle)
 
 
 plt.plot(t,t*vals[0]+vals[1])
-
+plt.title('Lineærregresjon for Perihelionvinkelen ')
+plt.xlabel('Tid [yr]')
+plt.ylabel(r'Grader [$^o$]' )
 plt.show()
 
-print(vals[0]*t[-1])
+print(r'Endringen over et århundre er %.4f grader ' %(vals[0]*T))
