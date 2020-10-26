@@ -7,7 +7,7 @@ plt.rcParams.update({'figure.autolayout': True})
 T=10
 
 for i in range(2):
-    f = open("Euler_position_0_0001_object_"+str(i)+".txt")
+    f = open("earthsunsystem/Euler_position_0_0001_object_"+str(i)+".txt")
     f.readline()
     words = np.array(f.read().split(),np.float)
     if i ==0:
@@ -19,7 +19,7 @@ for i in range(2):
     f.close()
 
 for i in range(2):
-    f = open("Euler_velocity_0_0001_object_"+str(i)+".txt")
+    f = open("earthsunsystem/Euler_velocity_0_0001_object_"+str(i)+".txt")
     f.readline()
     words = np.array(f.read().split(),np.float)
     if i ==0:
@@ -66,7 +66,7 @@ plt.legend()
 plt.show()
 
 for i in range(2):
-    f = open("verlet_position_0_0001_object_"+str(i)+".txt")
+    f = open("earthsunsystem/verlet_position_0_0001_object_"+str(i)+".txt")
     f.readline()
     words = np.array(f.read().split(),np.float)
     if i ==0:
@@ -78,7 +78,7 @@ for i in range(2):
     f.close()
 
 for i in range(2):
-    f = open("verlet_velocity_0_0001_object_"+str(i)+".txt")
+    f = open("earthsunsystem/verlet_velocity_0_0001_object_"+str(i)+".txt")
     f.readline()
     words = np.array(f.read().split(),np.float)
     if i ==0:

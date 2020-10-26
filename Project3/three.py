@@ -30,11 +30,11 @@ for t in range(len(dt)):
             rely.append(planetyvalues-staryvalues)
         f.close()
 
-relx = np.array(relx)
-rely = np.array(rely)
+relx1 = np.array(relx)
+rely1 = np.array(rely)
 
-for i in range(len(relx)):
-    plt.plot(relx[i],rely[i],label = names[i])
+for i in range(len(relx1)):
+    plt.plot(relx1[i],rely1[i],label = names[i])
 
 plt.title(r"Trelegeme for 100 år med $\Delta$t = 0.0001 år")
 plt.ylabel("y [AU]")
@@ -80,6 +80,17 @@ plt.plot(0,0,"b*")
 plt.axis("equal")
 plt.show()
 
+for i in range(len(relx)):
+    plt.plot(relx[i],rely[i],label = '%s system 2' %(names[i]))
+    plt.plot(relx1[i],rely1[i],label = names[i])
+
+plt.title(r"Sammenligning av trelegeme over 100 år med $\Delta_t$ = 0.00001 år")
+plt.ylabel("y [AU]")
+plt.xlabel("x [AU]")
+plt.legend()
+plt.plot(0,0,"b*")
+plt.axis("equal")
+plt.show()
 
 dt = ["0_00001_1000"]
 

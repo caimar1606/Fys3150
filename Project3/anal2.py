@@ -7,6 +7,7 @@ plt.rc("font",**font)
 plt.rcParams.update({'figure.autolayout': True})
 
 efirst = "earthsunsystem/Euler_position_"
+
 elast = "_object_"
 
 nr = 1
@@ -48,6 +49,7 @@ for j in range(nr):
         print("The maximum error for the Euler method for planet %g is %f when dt is %g years" %(j+1,errors[j,i],dtval[i]))
 
 plt.plot(np.log(h), np.log(errors[0,:]))
+plt.title('Log-plot of the relative error for Forward Euler ')
 plt.ylabel("log(Relative error)")
 plt.xlabel("log(h)")
 plt.show()
@@ -87,6 +89,7 @@ for j in range(nr):
         print("The maximum error for the velocity verlet method for planet %g is %f when dt is %g" %(j+1,errorsv[j,i],dtval[i]))
 
 plt.plot(np.log(h) , np.log(errorsv[0,:]))
+plt.title('Log-plot of the relative error for Velocity Verlet ')
 plt.ylabel("log(Relative error)")
 plt.xlabel("log(h)")
 plt.show()
