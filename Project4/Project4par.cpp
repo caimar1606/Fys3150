@@ -64,6 +64,9 @@ int main(int argc, char* argv[]){
     ofile.open(fileout);
   }
 
+  double  TimeStart, TimeEnd, TotalTime;
+  TimeStart = MPI_Wtime();
+
   //Loop for de forskjellige T-verdiene
   for(double T=Tmin;T<=Tmax;T+=deltaT){
     B = 1/T;
@@ -87,6 +90,12 @@ int main(int argc, char* argv[]){
     //Legger sammen forventingsverdier til forskjellige prosesser
     for( int i =0; i < 5; i++){
       MPI_Reduce(&expval(i), &totalexpval(i), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    }
+
+    TimeEnd = MPI_Wtime();
+    TotalTime = TimeEnd-TimeStart;
+    if (core_pos==0){
+      cout << "Tiden som programmet bruker for å regne ut verdiene er: " << TotalTime<<"s"<<endl;
     }
     //printer ut forventningsverdier
     if (core_pos ==0){
