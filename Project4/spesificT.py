@@ -1,3 +1,10 @@
+"""
+Programmet plotter forventingsverdier i mot antall Monte Carlo sykluser
+for T = 1 og T = 2.4, både for alle spinn = 1 , og for tilfeldige startkonfigurasjoner.
+Det plotter også totalt antall flips i mot antall Monte Carlo sykluser.
+Til slutt plotter det histogrammer av energifordelinger rundt likevekten i område
+mellom 10000 og 100000 Monte Carlo sykluser for T = 1 og T = 2.4 med tilfeldig startkonfigurasjoner.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 

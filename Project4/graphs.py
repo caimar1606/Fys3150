@@ -1,3 +1,7 @@
+"""
+Dette programmet plotter forventingsverdier for energi, varmekapasitet, abs(magnetisk moment)
+og magnetisk susceptibilitet for forskjellige L-verdier over forskjellige temperatur intervaller
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -5,7 +9,9 @@ font = {"family":"sans serif","weight" : "normal", "size": 15}
 plt.rc("font",**font)
 plt.rcParams.update({'figure.autolayout': True})
 
-f = open("L40")
+
+#Plott av verdier for L = 40
+f = open("runs/peaksims/L40")
 
 words = f.read().split()
 
@@ -42,8 +48,8 @@ plt.xlabel('T', fontsize=20)
 plt.plot(T,Sus)
 plt.show()
 
-
-f = open("L60")
+#Plott av verdier for L=60
+f = open("runs/peaksims/L60")
 
 words = f.read().split()
 
@@ -80,8 +86,8 @@ plt.xlabel('T', fontsize=20)
 plt.plot(T,Sus)
 plt.show()
 
-
-f = open("L80")
+#Plott av verdier for L = 80
+f = open("runs/peaksims/L80")
 
 words = f.read().split()
 
@@ -118,8 +124,8 @@ plt.xlabel('T', fontsize=20)
 plt.plot(T,Sus)
 plt.show()
 
-
-f = open("L100")
+#Plott av verdier for L = 100
+f = open("runs/peaksims/L100")
 
 words = f.read().split()
 

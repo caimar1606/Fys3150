@@ -1,0 +1,33 @@
+Vi har to cpp programmer:
+
+  project4.cpp:
+    Dette programmet kjører kun for en spesifikk temperatur, og kan ha enten tilfeldig eller spinn = 1 startkonfigurasjoner.
+    Dette programmet er det eneste programmet som skriver ut vektorer for forskjellige verdier som funksjon av MC sykluser.
+    Et kall av programmet kan se ut som:
+      ./project4.exe 20 1 1000000 L20T1 L20T1Vec
+    Template for kjøring:
+      ./project4.exe L T MCC forventingsfilnavn vektorfilnavn
+
+  project4par.cpp:
+    Dette programmet er parallellisert, og går over et temperatur intervall. Det minner mye om project4.cpp, men har ikke med
+    en del ting som vektorer av MC sykluser, slik at dette er mer optimalt for de siste delene av prosjektet.
+    Et kall av programmet kan se ut som:
+      mpirun -n 4 ./project4par.exe 40 2.27 2.33 0.005 1000000 L40
+    Template for kjøring:
+      mpirun -n 4 ./project4par.exe L Tstart Tslutt deltaT MCC filnavn
+
+I tillegg, har vi fire python programmer for å analysere dataen vår.
+Under kjøring har ingen av disse ekstra kommandolinjeargument.
+
+  forventning.py:
+    Regner ut forveningsverdier for L = 2, T = 1.
+
+  spesificT.py:
+    Plotter forskjellige kurver og histogrammer for tilfellene L = 20, og T = 1 og 2.4.
+
+  graphs.py:
+    Plotter forskjellige kurver for de siste delene av programmet, som er forventingsverdier
+    for forskjellige variabler over temperaturområder for forskjellige L-verdier.
+
+  findtc.py:
+    Regner på toppene til grafene fra graphs.py. Finner verdien for Tc når L går mot uendelig

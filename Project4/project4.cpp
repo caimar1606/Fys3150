@@ -1,3 +1,11 @@
+/*
+Dette er et program for å simulere to-spinn systemet for et LxL gitter med objekter som har spinn +-1
+For å kjøre programmet må man sende med: L temperatur antallMCsykluser filnavnforventningsverdi filnavnvektorer
+Man kan sende med et ekstra kommandolinjeargument for å ha spinn 1 startkonfigurasjon for alle objekter
+, ellers er det tilfeldig startkonfigurasjon.
+
+Legg merke til at dette programmet bare regner for en gitt T-verdi og er ikke parallellisert.
+*/
 #include <armadillo>
 #include <cstdlib>
 #include <random>
@@ -10,6 +18,7 @@ using namespace arma;
 
 ofstream ofile;
 
+//Funksjon som lager perodiske grensebetingelser
 inline double periodic(int val,int add, int L){
   return (val+L+add)%L;
 }
@@ -20,6 +29,7 @@ void outputexpect(int, int ,double, vec);
 void outputvec(int, int ,double, mat,string);
 
 int main(int argc, char* argv[]){
+  //Definisjoner av variabler og vektorer
   int E = 0;
   int M = 0;
   int nflips=0;
@@ -32,12 +42,14 @@ int main(int argc, char* argv[]){
   vec expval = vec(5,fill::zeros);
   mat vecval = mat(7,maxmcc,fill::zeros);
 
+  //Setter opp trekking av tilfeldige tall
   random_device rd;
   mt19937_64 gen(rd());
   uniform_real_distribution<double> dist(0.0,1.0);
 
   mat spinmat = mat(L,L);
 
+  //If setning som starter spinn 1 startkonfigurasjon
   if(argc == 7){
     int val = 1;
     init(L,spinmat,E,M,dist,gen,val);
@@ -45,6 +57,13 @@ int main(int argc, char* argv[]){
   else{
     init(L,spinmat,E,M,dist,gen,0);
   }
+  //For loop over mc sykluser
+
+  clock_t start, finish;
+  double time;
+
+  double cps = CLOCKS_PER_SEC;
+  start = clock();
   for(int count = 1;count<=maxmcc;count++){
     sweep(L,E,M,nflips,spinmat,valE,DE,dist,gen);
     expval(0) += E;
@@ -60,14 +79,21 @@ int main(int argc, char* argv[]){
     vecval(5,count-1) = nflips;
     vecval(6,count-1) = E;
   }
+
+  finish = clock();
+  time = (finish - start)/cps;
+  cout << "Tiden det tar med " << maxmcc << " Monte Carlo sykluser er " << time*1000 << "ms" << endl;
   string fileout = argv[4];
   string vecfileout = argv[5];
   ofile.open(fileout);
+  //Skriver ut forventningsverdier
   outputexpect(L,maxmcc,T,expval);
   ofile.close();
+  //Skriver ut vektorer som funksjon av sykluser
   outputvec(L,maxmcc,T,vecval,vecfileout);
 }
 
+//Gjør et utvalg av mulige tilfeldige spinnendringer LxL ganger og regner ut endringer i energi og magnetisk moment
 void sweep(int L,int &E,int &M, int &nflips,mat &spinmat,vec valE,vec DE,uniform_real_distribution<double> &dist, mt19937_64 &gen){
   int Nmax = L*L;
   nflips = 0;
@@ -85,7 +111,7 @@ void sweep(int L,int &E,int &M, int &nflips,mat &spinmat,vec valE,vec DE,uniform
     }
   }
 }
-
+//Summerer spinnene rundt et gitt spinn
 int nearsum(int x, int y, mat &spinmat,int L){
   int ssum = 0;
   for(int add = -1;add<=1;add+=2){
@@ -95,8 +121,8 @@ int nearsum(int x, int y, mat &spinmat,int L){
   return ssum;
 }
 
+//Lager startmatrise med tilfeldig konfigurasjon eller spinn = 1
 void init(int L,mat &spinmat,int &E,int &M,uniform_real_distribution<double> &dist, mt19937_64 &gen, int val){
-
 if(val == 0){
   for(int x = 0; x<L;x++){
     for(int y = 0; y < L; y++){
@@ -121,7 +147,7 @@ else{
   }
 }
 
-
+//Skriver ut forventningsverdier
 void outputexpect(int L, int maxmcc, double T, vec expval){
   double norm = 1.0/((double) (maxmcc));
   double E_calc = expval(0)*norm;
@@ -138,7 +164,7 @@ void outputexpect(int L, int maxmcc, double T, vec expval){
   ofile << setw(17) << setprecision(8) <<"M-abs: "<< absM_calc/L/L<<endl;
   ofile << setw(17) << setprecision(8) <<"Sus: "<< Mvar/T<<endl;
 }
-
+//Skriver ut vektorer som funksjoner av Monte Carlo syklus
 void outputvec(int L, int maxmcc, double T, mat vecval,string filename){
   vecval = vecval/L/L;
   string output;

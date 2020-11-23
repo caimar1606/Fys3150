@@ -1,3 +1,9 @@
+/*
+Dette programmet simulerer et LxL spinsystem med tilfeldig startkonfigurasjon for et invervall med temperaturer.
+Variabler som må sendes med er: L Tmin Tmax dT antallMCC filnavn.
+Antall Monte Carlo sykluser blir fordelt på antall parallelle prosesser.
+Vi tar gjennomsnittet av forventningsverdiene over alle de parallelle prosessene, og det er dette som printes.
+*/
 #include <mpi.h>
 #include <armadillo>
 #include <cstdlib>
@@ -10,7 +16,7 @@ using namespace std;
 using namespace arma;
 
 ofstream ofile;
-
+//Funksjon som lager perodiske grensebetingelser
 inline double periodic(int val,int add, int L){
   return (val+L+add)%L;
 }
@@ -23,11 +29,13 @@ void outputexpect(int, int ,double, vec);
 double ran2(long *);
 
 int main(int argc, char* argv[]){
+  //Starter parallellisering
   int cores, core_pos;
   MPI_Init(&argc, &argv);
   MPI_Comm_size (MPI_COMM_WORLD, &cores);
   MPI_Comm_rank (MPI_COMM_WORLD, &core_pos);
 
+  //Definerer variabler
   int maxmcc = atof(argv[5]);
   int L = atof(argv[1]);
   double Tmin = atof(argv[2]);
@@ -35,24 +43,28 @@ int main(int argc, char* argv[]){
   double deltaT = atof(argv[4]);
   vec DE = {8, 4, 0, -4, -8};
 
+  //Definerer loop grenser
   int nr_inter = maxmcc/cores;
   int start_loop = core_pos*nr_inter+1;
   int end_loop = (core_pos+1)*nr_inter;
   if((core_pos == cores-1) && (end_loop < maxmcc)) end_loop = maxmcc;
 
+  //Setter opp tilfeldige generatorer
   random_device rd;
   mt19937_64 gen(rd());
   uniform_real_distribution<double> dist(0.0,1.0);
-
   mat spinmat = mat(L,L);
   vec valE, expval;
   double B;
 
+  //Åpner fil ut
   vec totalexpval = vec(5,fill::zeros);
   if (core_pos ==0){
     string fileout = argv[6];
     ofile.open(fileout);
   }
+
+  //Loop for de forskjellige T-verdiene
   for(double T=Tmin;T<=Tmax;T+=deltaT){
     B = 1/T;
     valE = exp(-B*DE);
@@ -63,6 +75,7 @@ int main(int argc, char* argv[]){
 
     init(L,spinmat,E,M,dist,gen);
 
+    //Loop for MC sykluser
     for(int count = start_loop;count<=end_loop;count++){
       sweep(L,E,M,spinmat,valE,DE,dist,gen);
       expval(0) += E;
@@ -71,9 +84,11 @@ int main(int argc, char* argv[]){
       expval(3) += M*M;
       expval(4) += fabs(M);
     }
+    //Legger sammen forventingsverdier til forskjellige prosesser
     for( int i =0; i < 5; i++){
       MPI_Reduce(&expval(i), &totalexpval(i), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     }
+    //printer ut forventningsverdier
     if (core_pos ==0){
       outputexpect(L,maxmcc,T,totalexpval);
 
@@ -84,6 +99,7 @@ MPI_Finalize();
 return 0;
 }
 
+//Gjør et utvalg av mulige tilfeldige spinnendringer LxL ganger og regner ut endringer i energi og magnetisk moment
 void sweep(int L,double &E,double &M,mat &spinmat,vec valE,vec DE,uniform_real_distribution<double> &dist, mt19937_64 &gen){
   int Nmax = L*L;
   for(int N=0;N<Nmax;N++){
@@ -100,7 +116,7 @@ void sweep(int L,double &E,double &M,mat &spinmat,vec valE,vec DE,uniform_real_d
   }
 }
 
-
+//Summerer spinnene rundt et gitt spinn
 int nearsum(int x, int y, mat &spinmat,int L){
   int ssum = 0;
   for(int add = -1;add<=1;add+=2){
@@ -110,9 +126,8 @@ int nearsum(int x, int y, mat &spinmat,int L){
   return ssum;
 }
 
-
+//Lager startmatrise med tilfeldig konfigurasjon eller spinn = 1
 void init(int L,mat &spinmat,double &E,double &M,uniform_real_distribution<double> &dist, mt19937_64 &gen){
-
   for(int x = 0; x<L;x++){
     for(int y = 0; y < L; y++){
       double r = dist(gen);
@@ -132,7 +147,7 @@ void init(int L,mat &spinmat,double &E,double &M,uniform_real_distribution<doubl
   }
 }
 
-
+//Skriver ut forventningsverdier
 void outputexpect(int L, int maxmcc, double T, vec expval){
   double norm = 1.0/((double) (maxmcc));
   double E_calc = expval(0)*norm;

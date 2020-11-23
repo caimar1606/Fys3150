@@ -1,3 +1,6 @@
+"""
+Programmet printer analytiske verdier for relevante forventningsverdier for L = 2, T = 1
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,7 +18,6 @@ varme = (1/T**2)*EE-Eexact**2
 
 susexact = (32*np.exp(8)+32)/z
 
-print('Z = %f' %(z))
 print('<E> = %g' %(Eexact/L**2))
 print('|M| = %f' %(absMexact/L**2))
 print('Varmekapasiteten Cv er %f' %(varme/L**2))
