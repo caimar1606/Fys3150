@@ -35,16 +35,17 @@ x = np.linspace(0,L,nx)
 t = np.linspace(0,T,nt)
 
 dt = 0.00005
-anal = v(x,dt*10)
+index = 5000
+anal = v(x,dt*index)
 
 for name in names:
     file = open(name)
 
     values = np.array([float(i) for i in file.read().split()]).reshape((nt,nx))
 
-    plt.plot(x,values[10,:],label = "program")
+    plt.plot(x,values[index,:],label = "program")
     plt.plot(x,anal)
     plt.legend()
     plt.show()
-    plt.plot(x,values[10]-f(x))
+    plt.plot(x,values[index]-f(x))
     plt.show()
