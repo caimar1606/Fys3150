@@ -24,18 +24,17 @@ def v(x,t):
     return val
 
 
-names = ["forward0_01dx","backward0_01dx","CN0_01dx"]
+names = ["forward0_1dx","backward0_1dx","CN0_1dx"]
 
 dx = 0.01
 
-nx = 101
-nt = 20001
-
+nx = 11
+nt = 201
 x = np.linspace(0,L,nx)
 t = np.linspace(0,T,nt)
 
-dt = 0.00005
-index = 5000
+dt = t[1]-t[0]
+index = 10
 anal = v(x,dt*index)
 
 for name in names:

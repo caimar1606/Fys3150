@@ -33,6 +33,7 @@ void solver::init2d(double L,double T, int nt, int nx,mat (*func)(vec,double)){
   m_vc(span(1,nx-2),span(1,nx-2),span(0,0)) = func(linspace(m_dx,L-m_dx,nx-2),L);
 }
 
+
 void solver::forward(){
   for(int j = 0; j < m_nt-1; j++){
     for(int i = 1; i < m_nx-1; i++){
@@ -87,6 +88,37 @@ void solver::CN(){
   }
 }
 
+void solver::CNwQ(vec (*func)(vec,double,double)){
+  vec gtilde;
+  double e = -m_alpha;
+  double diag = 2+2*m_alpha;
+  double ee = e*e;
+  double diagD = 2-2*m_alpha;
+  double ed = m_alpha;
+
+  vec dtilde = zeros(m_nx);
+  dtilde +=ones(m_nx)*diag;
+
+  for(int i =1;i<m_nx;i++){
+    dtilde(i)-=ee/dtilde(i-1);
+  }
+  mat multmat = eye(m_nx,m_nx)*diagD;
+  for(int i =0;i<m_nx;i++){
+    for( int j = 0; j<m_nx;j++){
+      if(abs(i-j)==1){
+        multmat(i,j) = ed;
+      }
+    }
+  }
+  vec addmat =zeros(m_nx);
+  for(int j = 0; j < m_nt-1; j++){
+    addmat(span(1,m_nx-2)) = func(linspace(m_dx,m_L-m_dx,m_nx-2),m_L,m_dt*j)*m_dt*2;
+    gtilde = multmat*(m_v.col(j))+addmat;
+    trigsolve(gtilde,dtilde,e,j);
+  }
+}
+
+
 
 void solver::trigsolve(vec gtilde, vec dtilde, double e, int t){
   for(int i = 1; i < m_nx;i++){
@@ -106,9 +138,9 @@ void solver::solve2d(double eps,int S){
   count = 0;
 
   mat M = makemat();
+  x = ones(matsize);
 
   for(int i = 1;i<m_nt;i++){
-    x = ones(matsize);
     b = vectorise(m_vc(span(1,m_nx-2),span(1,m_nx-2),span(i-1,i-1)));
     count = 0;
     val = 1;
@@ -119,6 +151,7 @@ void solver::solve2d(double eps,int S){
       x = xnew;
       count++;
     }
+
     m_vc(span(1,m_nx-2),span(1,m_nx-2),span(i,i)) = reshape(x,m_nx-2,m_nx-2);
   }
 }
@@ -160,43 +193,43 @@ mat solver::makemat(){
   mat M = zeros((m_nx-2)*(m_nx-2),(m_nx-2)*(m_nx-2));
   int jump = (m_nx-2);
   int n = 0;
-  for(int i = 0;i<m_nx-2;i++){
-    for(int j = 0; j < m_nx-2;j++){
+  for(int j = 0;j<m_nx-2;j++){
+    for(int i = 0; i < m_nx-2;i++){
       if(i==0 && j==0){
         M(n,n+1)=-m_alpha;
         M(n,n+jump)=-m_alpha;
       }
       else if(i==0 && j == m_nx-3){
-        M(n,n-1)=-m_alpha;
-        M(n,n+jump)=-m_alpha;
+        M(n,n+1)=-m_alpha;
+        M(n,n-jump)=-m_alpha;
       }
       else if(i==0 && j!=0 && j!=m_nx-3){
         M(n,n+1)=-m_alpha;
-        M(n,n-1)=-m_alpha;
+        M(n,n-jump)=-m_alpha;
         M(n,n+jump)=-m_alpha;
       }
 
       else if(i==m_nx-3 && j==0){
-        M(n,n+1)=-m_alpha;
-        M(n,n-jump)=-m_alpha;
+        M(n,n-1)=-m_alpha;
+        M(n,n+jump)=-m_alpha;
       }
       else if(i==m_nx-3 && j == m_nx-3){
         M(n,n-1)=-m_alpha;
         M(n,n-jump)=-m_alpha;
       }
       else if(i==m_nx-3&& j!=0 && j!=m_nx-3){
-        M(n,n+1)=-m_alpha;
+        M(n,n+jump)=-m_alpha;
         M(n,n-1)=-m_alpha;
         M(n,n-jump)=-m_alpha;
       }
       else if(j==0 && i!=0 && i!=m_nx-3){
         M(n,n+1)=-m_alpha;
         M(n,n+jump)=-m_alpha;
-        M(n,n-jump)=-m_alpha;
+        M(n,n-1)=-m_alpha;
       }
       else if(j==m_nx-3&& i!=0 && i!=m_nx-3){
         M(n,n-1)=-m_alpha;
-        M(n,n+jump)=-m_alpha;
+        M(n,n+1)=-m_alpha;
         M(n,n-jump)=-m_alpha;
       }
       else{

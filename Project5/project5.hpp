@@ -21,7 +21,8 @@ public:
   void forward();
   void backward();
   void CN();
-  void solve2d(double eps = pow(10,-6),int S = 10000);
+  void CNwQ(vec (*func)(vec,double,double));
+  void solve2d(double eps = pow(10,-10),int S = 1000000);
   void outputfinal(string filename);
   void output(string filename);
   void outputfinal2d(string filename);
