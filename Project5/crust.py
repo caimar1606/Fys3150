@@ -24,7 +24,7 @@ def u(x,t):
 T = 10**9
 Lplot = 120000
 secconst = 3.16*pow(10,16)
-nt = 100001
+nt = 50001
 nx = 101
 
 

@@ -35,7 +35,7 @@ t = np.linspace(0,T,nt)
 
 dt = t[1]-t[0]
 
-index = np.array([0,10,20,30])
+index = np.array([0,50])
 
 f = open("2d")
 
@@ -44,16 +44,23 @@ values = np.array([float(i) for i in f.read().split()]).reshape((nt,nx,nx))
 for i in index:
     anal = analytic(x,x,i*dt,30,30)
     plt.contourf(x,x,values[i])
-    plt.title("Sim")
+    plt.title(r"Simulasjon ved tiden t = %.2f " %(t[i]))
+    plt.xlabel('x', fontsize=15)
+    plt.ylabel('y', fontsize=15)
     plt.colorbar()
     plt.show()
 
     plt.contourf(x,x,anal)
     plt.colorbar()
-    plt.title("anal")
+    plt.title(r"Analytisk ved tiden t = %.2f " %(t[i]))
+    plt.xlabel('x', fontsize=15)
+    plt.ylabel('y',fontsize=15)
     plt.show()
 
-    plt.plot(x,values[i,nx//2,:],label = "sim")
-    plt.plot(x,anal[nx//2,:],label = "anal")
+    plt.plot(x,values[i,nx//2,:],label = "Simulasjon")
+    plt.plot(x,anal[nx//2,:],label = "Analytisk")
+    plt.title(r"Verdier for $x = L/2$, ved t = %.2f " %(t[i]))
+    plt.xlabel('x', fontsize=15)
+    plt.ylabel('y', fontsize=15)
     plt.legend()
     plt.show()
