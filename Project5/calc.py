@@ -25,7 +25,7 @@ def v(x,t):
 
 
 names = ["forward0_1dx","backward0_1dx","CN0_1dx"]
-algo = ['Forward Euler', 'Backward Euler', 'Crank-Nicholsen']
+algo = ['Forward Euler', 'Backward Euler', 'Crank-Nicolson']
 names2 = ['forward0_01dx', 'backward0_01dx','CN0_01dx']
 
 dx = 0.1
@@ -42,13 +42,20 @@ for i in range(len(index)):
     anal = v(x,dt*index[i])
     for j in range(len(names)):
         file = open(names[j])
-
         values = np.array([float(k) for k in file.read().split()]).reshape((nt,nx))
-        plt.plot(x,values[index[i],:],label = "program")
-        plt.plot(x,anal)
+        plt.plot(x,values[index[i],:],label = "Simulering")
+        plt.plot(x,anal, label  = 'Analytisk')
+        plt.xlabel('x', fontsize=15)
+        plt.ylabel('U(x)', fontsize=15)
+        plt.title('Analytisk og Simulasjon til %s for t = %.2f med tidssteg %.2f' %(algo[j], index[i]*dt, dx))
         plt.legend()
+        plt.savefig('anal_sim_%.2f_%s_t%.2f.png' %(dx, algo[j], index[i]*dt))
         plt.show()
+        plt.title('Varmefordelingen fra %s for t = %.2f med tidssteg %.2f' %(algo[j], index[i]*dt, dx))
+        plt.xlabel('x', fontsize=15)
+        plt.ylabel('V(x)', fontsize=15)
         plt.plot(x,values[index[i]]-f(x))
+        plt.savefig('Varmefordeling_tidssteg%.2f_%s_t%.2f.png' %(dx, algo[j], index[i]*dt))
         plt.show()
 
         print('Differansen mellom den analytiske og den simulerte løsningen i %s er %g ved t = %g' %(algo[j],np.average(np.abs(anal-values[index[i],:])),index[i]*dt))
@@ -56,7 +63,6 @@ for i in range(len(index)):
 
 
 dx = 0.01
-
 nx = 101
 nt = 20001
 x = np.linspace(0,L,nx)
@@ -70,10 +76,18 @@ for i in range(len(index)):
     for j in range(len(names2)):
         file = open(names2[j])
         values = np.array([float(k) for k in file.read().split()]).reshape((nt,nx))
-        plt.plot(x,values[index[i],:],label = "program")
-        plt.plot(x,anal)
+        plt.plot(x,values[index[i],:],label = "Simulering")
+        plt.plot(x,anal, label = 'Analytisk')
+        plt.xlabel('x', fontsize=15)
+        plt.ylabel('U(x)', fontsize=15)
+        plt.title('Analytisk og Simulasjon til %s for t = %.2f med tidssteg %.2f' %(algo[j], index[i]*dt, dx))
         plt.legend()
+        plt.savefig('anal_sim_%.2f_%s_t%.2f.png' %(dx, algo[j], index[i]*dt))
         plt.show()
         plt.plot(x,values[index[i]]-f(x))
+        plt.title('Varmefordelingen fra %s for t = %.2f med tidssteg %.2f' %(algo[j], index[i]*dt, dx))
+        plt.xlabel('x', fontsize=15)
+        plt.ylabel('V(x)', fontsize=15)
+        plt.savefig('Varmefordeling_tidssteg%.2f_%s_t%.2f.png' %(dx, algo[j], index[i]*dt))
         plt.show()
         print('Differansen mellom den analytiske og den simulerte løsningen i %s er %g ved t = %g' %(algo[j],np.average(np.abs(anal-values[index[i],:])),index[i]*dt))
