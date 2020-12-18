@@ -64,3 +64,5 @@ for i in index:
     plt.ylabel('y', fontsize=15)
     plt.legend()
     plt.show()
+
+    print('Differansen mellom den analytiske og den simulerte løsningen er %g ved t = %g' %(np.average(np.abs(anal[nx//2,:]- values[i,nx//2,:])),t[i]))

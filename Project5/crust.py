@@ -27,8 +27,6 @@ secconst = 3.16*pow(10,16)
 nt = 50001
 nx = 101
 
-
-
 k = 2.5;
 rho = 3.5*10*10*10;
 cp = 1000;
@@ -40,7 +38,7 @@ xplot = np.linspace(0,Lplot,nx)
 xscaled = xplot/gamma
 dt = (t[1]-t[0])*secconst
 
-index = [1000,5000,10000,-1]
+index = [1000,5000,10000,25000, nt-1]
 
 file = open("noQ")
 
@@ -61,18 +59,30 @@ values4 = np.array([float(i) for i in file.read().split()]).reshape((nt,nx))
 fval = f(xscaled)
 
 for i in range(len(index)):
-    plt.plot(xplot-Lplot,values[index[i],:]-fval,label = index[i]*dt/secconst/(10**6))
+    plt.plot(-1*np.flip(xplot-Lplot)/1000,values[index[i],:]-fval,label = r't = %.0f My' %(index[i]*dt/secconst/(10**6)))
+    plt.title('Diffusjon uten Q')
+    plt.xlabel('Avstand [km]')
+    plt.ylabel(r'Temperatur $[^oC]$')
 plt.legend()
 plt.show()
 for i in range(len(index)):
-    plt.plot(xplot-Lplot,values2[index[i],:]-fval,label = index[i]*dt/secconst/(10**6))
+    plt.plot(-1*np.flip(xplot-Lplot)/1000,values2[index[i],:]-fval,label = r't = %.0f My' %(index[i]*dt/secconst/(10**6)))
+    plt.xlabel('Avstand [km]')
+    plt.ylabel(r'Temperatur $[^oC]$')
+    plt.title('Diffusjon med Q')
 plt.legend()
 plt.show()
 for i in range(len(index)):
-    plt.plot(xplot-Lplot,values3[index[i],:]-fval,label = index[i]*dt/secconst/(10**6))
+    plt.plot(-1*np.flip(xplot-Lplot)/1000,values3[index[i],:]-fval,label = r't = %.0f My' %(index[i]*dt/secconst/(10**6)))
+    plt.xlabel('Avstand [km]')
+    plt.ylabel(r'Temperatur $[^oC]$')
+    plt.title('Diffusjon med Q og radioaktive stoffer')
 plt.legend()
 plt.show()
 for i in range(len(index)):
-    plt.plot(xplot-Lplot,values4[index[i],:]-fval,label = index[i]*dt/secconst/(10**6))
+    plt.plot(-1*np.flip(xplot-Lplot)/1000,values4[index[i],:]-fval,label = r't = %.0f My' %(index[i]*dt/secconst/(10**6)))
+    plt.xlabel('Avstand [km]')
+    plt.ylabel(r'Temperatur $[^oC]$')
+    plt.title('Diffusjon med Q og radioaktive stoffer med halveringstid')
 plt.legend()
 plt.show()
