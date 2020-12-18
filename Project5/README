@@ -1,0 +1,46 @@
+Liste over filer i dette prosjektet:
+enheter i [] betyr at denne verdien skal oppgis i denne enheten, men uten enhet.
+  F.eks. x[km] når x = 100km er 100.
+
+
+Cpp executables:
+  project5.exe:
+    -Kjører de tre endimensjonale algoritmene for diffusjonslikningen, og printer ut verdier:
+      ./project5.exe T L nrtpoints nrxpoints outputnameforward outputnamebackward outputnameCN
+
+  project5Q.exe:
+    -Kjører modifisert CN-algoritme for å løse de forskjellige modellene for bakken, og printer ut verdier:
+      ./project5Q.exe xmax[km] Tmax[Gy] nrtpoints nrxpoints namenoQ namenormalQ namemoreQ nameexpQ
+
+  project52d.exe:
+    -Kjører 2d algoritme med grensebetingelser 0 med initialbetingelser g(x,y)=sin(nx/L)sin(ny/L) og printer verdier:
+      ./project52d.exe T L nrtpoints nrx/ypoints 2d
+
+Cpp mainfiler:
+  main.cpp:
+    -Brukes for project5.exe
+
+  main2d.cpp:
+    -Brukes for project52d.exe
+
+  mainQ.cpp:
+    -Brukes for project5Q.exe
+
+Klasser:
+  solver:
+    -Inneholder alle algoritmer og printfunksjoner
+      Headerfil: project5.hpp
+      funksjoner: class_solver.cpp
+
+Pythonfiler:
+  2d.py:
+    -Brukes for analyse av data som vi har generert med project52d.exe
+
+  calc.py:
+    -Brukes for analyse av data som vi har generert med project5.exe
+
+  crust.py
+    -Brukes for analyse av data som vi har generert med project5Q.exe
+
+Makefile:
+  -Har forskjellige complileroptions for de forskjellige programmene.
